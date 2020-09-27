@@ -8,5 +8,5 @@ from .serializers import RoomSerializer
 def list_rooms(request):
     rooms = Room.objects.all()
     serialized_rooms = RoomSerializer(rooms, many=True)
-    print(serialized_rooms.data)
+
     return Response(data=serialized_rooms.data)
