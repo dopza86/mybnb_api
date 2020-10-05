@@ -5,6 +5,9 @@ from .models import Room
 
 class RoomSerializer(serializers.ModelSerializer):
 
+    user = UserSerializer()
+    is_favs = serializers.SerializerMethodField()
+
     class Meta:
         model = Room
         exclude = ("modified",)
@@ -22,3 +25,11 @@ class RoomSerializer(serializers.ModelSerializer):
                 "Not enough time between changes")
         else:
             return data
+
+    def get_is_favs(self, obj):
+        request = self.context.get("request")
+        if request is not None:
+            user = request.user
+            if user.is_authenticated:
+                return obj in user.favs.all()
+        return False
