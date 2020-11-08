@@ -8,11 +8,17 @@ from rest_framework.decorators import api_view, action
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAdminUser, AllowAny
+from rest_framework.pagination import PageNumberPagination
+
 from rooms.serializers import RoomSerializer
 from rooms.models import Room
 from .serializers import UserSerializer
 from .models import User
 from .permissions import IsSelf
+
+
+class OwnPagination(PageNumberPagination):
+    page_size = 5
 
 
 class UsersViewSet(ModelViewSet):
@@ -47,11 +53,12 @@ class UsersViewSet(ModelViewSet):
     @action(detail=True)
     def favs(self, request, pk):
         user = self.get_object()
-
         favs = user.favs.all()
-        serializer = RoomSerializer(user.favs.all(), many=True, context={
+        page = self.paginate_queryset(favs)
+        pagination_class = OwnPagination
+        serializer = RoomSerializer(page, many=True, context={
                                     "request": request}).data
-        return Response(serializer)
+        return self.get_paginated_response(serializer)
 
     @favs.mapping.put
     def toggle_favs(self, request, pk):

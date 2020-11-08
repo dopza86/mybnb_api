@@ -25,7 +25,7 @@ SECRET_KEY = "cc)*5=(s+i2-&9x7&&&o+y7$g5!db3tvu85ykok#mwxf#6gir2"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -46,11 +46,13 @@ PROJECT_APPS = [
     "rooms.apps.RoomsConfig",
 ]
 
-THIRD_PARTY_APPS = ["rest_framework", ]
-
+THIRD_PARTY_APPS = ["rest_framework", 'django_seed', 'corsheaders']
+#
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -148,3 +150,8 @@ REST_FRAMEWORK = {
 if not DEBUG:
     REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"] = [
         'rest_framework.renderers.JSONRenderer', ]
+
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ALLOW_CREDENTIALS = True
